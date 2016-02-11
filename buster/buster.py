@@ -28,6 +28,7 @@ from docopt import docopt
 from time import gmtime, strftime
 from git import Repo
 from pyquery import PyQuery
+import platform
 
 
 def main():
@@ -45,18 +46,42 @@ def main():
                    "--no-parent "             # don't go to parent level
                    "--directory-prefix {1} "  # download contents to static/ folder
                    "--no-host-directories "   # don't create domain named folder
-                   "--restrict-file-name=unix "  # don't escape query string
                    "{0}").format(arguments['--domain'], static_path)
         os.system(command)
 
         # remove query string since Ghost 0.4
-        file_regex = re.compile(r'.*?(\?.*)')
-        for root, dirs, filenames in os.walk(static_path):
-            for filename in filenames:
-                if file_regex.match(filename):
-                    newname = re.sub(r'\?.*', '', filename)
-                    print "Rename", filename, "=>", newname
-                    os.rename(os.path.join(root, filename), os.path.join(root, newname))
+
+        # windows OS
+        if platform.system() == "Windows":
+            file_regex = re.compile(r'.*?(\@.*)')
+            for root, dirs, filenames in os.walk(static_path):
+                for filename in filenames:
+                    if file_regex.match(filename):
+                        newname = re.sub(r'\@.*', '', filename)
+                        print "Rename", filename, "=>", newname
+                        if os.path.isfile(os.path.join(root, newname)):
+                            os.remove(os.path.join(root, newname))
+                            print "removing " + root + "/" + newname 
+                        os.rename(os.path.join(root, filename), os.path.join(root, newname))
+                for filename in fnmatch.filter(filenames, "*.html"):
+                    data = None
+                    newData = None
+                    with open(os.path.join(root, filename), 'r') as file_open:
+                        data = file_open.read()
+                        newData = re.sub(r'\@v=..........','',data)
+                    with open(os.path.join(root, filename), 'w') as file_open:
+                        file_open.write(newData)
+                        print "patching", filename
+
+        # Mac, linux, etc
+        else:
+            file_regex = re.compile(r'.*?(\?.*)')
+            for root, dirs, filenames in os.walk(static_path):
+                for filename in filenames:
+                    if file_regex.match(filename):
+                        newname = re.sub(r'\?.*', '', filename)
+                        print "Rename", filename, "=>", newname
+                        os.rename(os.path.join(root, filename), os.path.join(root, newname))
 
         # remove superfluous "index.html" from relative hyperlinks found in text
         abs_url_regex = re.compile(r'^(?:[a-z]+:)?//', flags=re.IGNORECASE)

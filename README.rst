@@ -44,6 +44,8 @@ Don't forget to change your blog URL in config.js in Ghost.
 The Installation
 ----------------
 
+On Mac or Linux:
+----------------------------------------------------------------------
 Installing Buster is easy with pip:
 
     $ pip install buster
@@ -51,6 +53,17 @@ Installing Buster is easy with pip:
 You'll then have the wonderful ``buster`` command available.
 
 You could also clone the source and use the ``buster.py`` file directly.
+
+
+On Windows:
+----------------------------------------------------------------------
+$ cd ~
+$ git clone https://github.com/jegutierrez/buster
+$ cd buster
+$ python setup.py install
+$ buster --version
+0.1.3
+
 
 Requirements
 ------------
