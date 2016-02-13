@@ -57,12 +57,17 @@ You could also clone the source and use the ``buster.py`` file directly.
 
 On Windows:
 ----------------------------------------------------------------------
-$ cd ~
-$ git clone https://github.com/jegutierrez/buster
-$ cd buster
-$ python setup.py install
-$ buster --version
-0.1.3
+    
+    $ cd ~
+    
+    $ git clone https://github.com/jegutierrez/buster
+    
+    $ cd buster
+    
+    $ python setup.py install
+    
+    $ buster --version
+        0.1.3
 
 
 Requirements
